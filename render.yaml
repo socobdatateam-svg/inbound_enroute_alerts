@@ -1,0 +1,52 @@
+services:
+  - type: web
+    name: bot-workstation
+    runtime: docker
+    region: singapore
+    plan: starter
+    healthCheckPath: /healthz
+    envVars:
+      - key: SEATALK_APP_ID
+        sync: false
+      - key: SEATALK_APP_SECRET
+        sync: false
+      - key: SEATALK_SIGNING_SECRET
+        sync: false
+      - key: ADMIN_TOKEN
+        sync: false
+      - key: GOOGLE_CREDENTIALS_JSON
+        sync: false
+      - key: SHEET_ID
+        value: 1LiSwe5XABNPSPIhdK-Hu7S8VjWEsjPmUHmnU3toGXhc
+      - key: TAB_NAME
+        value: Compliance Tracker
+      - key: CAPTURE_RANGE
+        value: A1:X80
+      - key: BOT_CONFIG_TAB
+        value: bot_config
+      - key: BOT_NAME
+        value: Bot Workstation
+      - key: REPORT_LINK
+        value: https://docs.google.com/spreadsheets/d/1hYCkLL9Z4UR3WeKFuCDsOYch5v1FxmTJLGtk8UG_yyI/edit?gid=2001886446#gid=2001886446
+      - key: APP_TIMEZONE
+        value: Asia/Manila
+      - key: ENABLE_CHANGE_SENDS
+        value: "true"
+      - key: WATCH_TAB
+        value: Summary Sheet (In progress)
+      - key: WATCH_CELL
+        value: AE6
+      - key: WATCH_POLL_SECONDS
+        value: "1"
+      - key: CHANGE_SETTLE_SECONDS
+        value: "7"
+      - key: ENABLE_SCHEDULED_SENDS
+        value: "false"
+      - key: IMAGE_FORMAT
+        value: png
+      - key: PNG_DPI
+        value: "300"
+      - key: PNG_MAX_WIDTH
+        value: "2400"
+      - key: WORK_DIR
+        value: /app/tmp
