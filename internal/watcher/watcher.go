@@ -236,11 +236,23 @@ func (w *Watcher) alertText(ctx context.Context) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return formatLinehaulAlert(linehaulWindow, w.now()), nil
+	v3, err := w.cellFromTab(ctx, "enrroute_consodata", "V3")
+	if err != nil {
+		return "", err
+	}
+	v4, err := w.cellFromTab(ctx, "enrroute_consodata", "V4")
+	if err != nil {
+		return "", err
+	}
+	v5, err := w.cellFromTab(ctx, "enrroute_consodata", "V5")
+	if err != nil {
+		return "", err
+	}
+	return formatLinehaulAlert(linehaulWindow, w.now(), v3, v4, v5), nil
 }
 
-func formatLinehaulAlert(linehaulWindow string, now time.Time) string {
-	return fmt.Sprintf("<mention-tag target=\"seatalk://user?id=0\"/> IB Expected Linehauls to Arrive within %s including Late Units as of %s Update. Thanks!", linehaulWindow, now.Format("3:04PM"))
+func formatLinehaulAlert(linehaulWindow string, now time.Time, v3, v4, v5 string) string {
+	return fmt.Sprintf("<mention-tag target=\"seatalk://user?id=0\"/> IB Expected Linehauls to Arrive within %s including Late Units as of %s Update. Thanks!\n\n%s\n%s\n%s", linehaulWindow, now.Format("3:04PM"), v3, v4, v5)
 }
 
 func (w *Watcher) now() time.Time {
@@ -255,6 +267,17 @@ func (w *Watcher) cell(ctx context.Context, cell string) (string, error) {
 	values, err := w.sheets.Values(ctx, w.cfg.TabName, cell)
 	if err != nil {
 		return "", fmt.Errorf("read %s!%s: %w", w.cfg.TabName, cell, err)
+	}
+	if len(values) == 0 || len(values[0]) == 0 {
+		return "", nil
+	}
+	return values[0][0], nil
+}
+
+func (w *Watcher) cellFromTab(ctx context.Context, tabName, cell string) (string, error) {
+	values, err := w.sheets.Values(ctx, tabName, cell)
+	if err != nil {
+		return "", fmt.Errorf("read %s!%s: %w", tabName, cell, err)
 	}
 	if len(values) == 0 || len(values[0]) == 0 {
 		return "", nil
