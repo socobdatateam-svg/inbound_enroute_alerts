@@ -1,6 +1,6 @@
 # Bot Workstation
 
-Go SeaTalk bot that watches `Summary Sheet (In progress)!AE6`. When the value changes, it waits 7 seconds for dependent sheet data to settle, then captures `Compliance Tracker!A1:X80`, renders it as an image, and sends an interactive SeaTalk card to every known group.
+Go SeaTalk bot that watches `Summary Sheet (In progress)!AE6`. When the value changes, it waits 7 seconds for dependent sheet data to settle, then captures `Compliance Tracker!A1:X80`, renders it as an image, and sends an `@all` text update plus the report image to every known group.
 
 ## Requirements
 

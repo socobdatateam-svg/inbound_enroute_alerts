@@ -6,8 +6,6 @@ import (
 	"log"
 	"sync"
 	"time"
-
-	"bot-workstation/internal/seatalk"
 )
 
 type Config struct {
@@ -32,7 +30,7 @@ type Sheets interface {
 }
 
 type SeaTalk interface {
-	SendInteractiveAlert(context.Context, string, seatalk.AlertCard, string) error
+	SendGroupText(context.Context, string, string, bool) error
 	SendImage(context.Context, string, string) error
 }
 
@@ -215,31 +213,34 @@ func (w *Watcher) alert(ctx context.Context) error {
 	if len(groupIDs) == 0 {
 		return fmt.Errorf("no SeaTalk group IDs found in %s!A2:A", w.cfg.BotConfigTab)
 	}
-	card, err := w.alertCard(ctx)
+	text, err := w.alertText(ctx)
 	if err != nil {
 		return err
 	}
 	for _, groupID := range groupIDs {
-		if err := w.seatalk.SendInteractiveAlert(ctx, groupID, card, image); err != nil {
-			log.Printf("send card to %s: %v", groupID, err)
+		if err := w.seatalk.SendGroupText(ctx, groupID, text, true); err != nil {
+			log.Printf("send text to %s: %v", groupID, err)
 			continue
 		}
-		log.Printf("sent interactive card with report image to %s", groupID)
+		if err := w.seatalk.SendImage(ctx, groupID, image); err != nil {
+			log.Printf("send image to %s: %v", groupID, err)
+			continue
+		}
+		log.Printf("sent text and report image to %s", groupID)
 	}
 	return nil
 }
 
-func (w *Watcher) alertCard(ctx context.Context) (seatalk.AlertCard, error) {
-	controlTower, err := w.cell(ctx, "E1")
+func (w *Watcher) alertText(ctx context.Context) (string, error) {
+	linehaulWindow, err := w.cell(ctx, "O1")
 	if err != nil {
-		return seatalk.AlertCard{}, err
+		return "", err
 	}
-	return seatalk.AlertCard{
-		UpdatedAt:          w.now(),
-		BotName:            w.cfg.BotName,
-		ControlTowerUpdate: controlTower,
-		ReportLink:         w.cfg.ReportLink,
-	}, nil
+	return formatLinehaulAlert(linehaulWindow, w.now()), nil
+}
+
+func formatLinehaulAlert(linehaulWindow string, now time.Time) string {
+	return fmt.Sprintf("IB Expected Linehauls to Arrive within %s including Late Units as of %s Update. Thanks!", linehaulWindow, now.Format("3:04PM"))
 }
 
 func (w *Watcher) now() time.Time {

@@ -47,6 +47,7 @@ type AlertCard struct {
 type MessageOptions struct {
 	QuotedMessageID string
 	ThreadID        string
+	AtAll           bool
 }
 
 type APIResponse struct {
@@ -84,6 +85,11 @@ func (c *Client) SendText(ctx context.Context, groupID, content string, format i
 	}
 	applyMessageOptions(message, opts)
 	return c.sendGroupMessage(ctx, groupID, message)
+}
+
+func (c *Client) SendGroupText(ctx context.Context, groupID, content string, atAll bool) error {
+	_, err := c.SendText(ctx, groupID, content, 2, MessageOptions{AtAll: atAll})
+	return err
 }
 
 func (c *Client) SendGroupImage(ctx context.Context, groupID, imageBase64 string, opts MessageOptions) (APIResponse, error) {
@@ -194,6 +200,9 @@ func (c *Client) sendGroupMessage(ctx context.Context, groupID string, message m
 }
 
 func applyMessageOptions(message map[string]any, opts MessageOptions) {
+	if opts.AtAll {
+		message["at_all"] = true
+	}
 	if opts.QuotedMessageID != "" {
 		message["quoted_message_id"] = opts.QuotedMessageID
 	}
