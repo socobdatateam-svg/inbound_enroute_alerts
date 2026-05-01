@@ -17,7 +17,7 @@ services:
       - key: GOOGLE_CREDENTIALS_JSON
         sync: false
       - key: SHEET_ID
-        value: 1LiSwe5XABNPSPIhdK-Hu7S8VjWEsjPmUHmnU3toGXhc
+        value: 1APnTQXUQvWpTwmOLIC9U17kwjQcWX0BPYZvlfUPOJrU
       - key: TAB_NAME
         value: Compliance Tracker
       - key: CAPTURE_RANGE
@@ -27,7 +27,7 @@ services:
       - key: BOT_NAME
         value: Bot Workstation
       - key: REPORT_LINK
-        value: https://docs.google.com/spreadsheets/d/1hYCkLL9Z4UR3WeKFuCDsOYch5v1FxmTJLGtk8UG_yyI/edit?gid=2001886446#gid=2001886446
+        value: https://docs.google.com/spreadsheets/d/1APnTQXUQvWpTwmOLIC9U17kwjQcWX0BPYZvlfUPOJrU/edit?gid=755895903#gid=755895903
       - key: APP_TIMEZONE
         value: Asia/Manila
       - key: ENABLE_CHANGE_SENDS

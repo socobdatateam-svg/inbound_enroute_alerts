@@ -5,7 +5,7 @@ Go SeaTalk bot that watches `Summary Sheet (In progress)!AE6`. When the value ch
 ## Requirements
 
 - SeaTalk app with bot capability, event callback, and group message permission enabled.
-- Google service account with access to spreadsheet `1LiSwe5XABNPSPIhdK-Hu7S8VjWEsjPmUHmnU3toGXhc`.
+- Google service account with access to spreadsheet `1APnTQXUQvWpTwmOLIC9U17kwjQcWX0BPYZvlfUPOJrU`.
 - The spreadsheet must have:
   - `Compliance Tracker`
   - `bot_config`
