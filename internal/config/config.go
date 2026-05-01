@@ -57,7 +57,7 @@ func Load() (Config, error) {
 		EnableChangeSends:    getenv("ENABLE_CHANGE_SENDS", "true") == "true",
 		WatchTab:             getenv("WATCH_TAB", "Summary Sheet (In progress)"),
 		WatchCell:            getenv("WATCH_CELL", "AE6"),
-		WatchPollSeconds:     mustInt("WATCH_POLL_SECONDS", 1),
+		WatchPollSeconds:     mustInt("WATCH_POLL_SECONDS", 5),
 		ChangeSettleSeconds:  mustInt("CHANGE_SETTLE_SECONDS", 7),
 	}
 	cfg.SeaTalkAppID = os.Getenv("SEATALK_APP_ID")

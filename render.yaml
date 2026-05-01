@@ -37,7 +37,7 @@ services:
       - key: WATCH_CELL
         value: AE6
       - key: WATCH_POLL_SECONDS
-        value: "1"
+        value: "5"
       - key: CHANGE_SETTLE_SECONDS
         value: "7"
       - key: ENABLE_SCHEDULED_SENDS

@@ -6,6 +6,7 @@ import (
 	"os"
 	"sort"
 	"strings"
+	"sync"
 
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
@@ -17,6 +18,8 @@ type Client struct {
 	svc      *sheetsapi.Service
 	sheetID  string
 	tokenSrc oauth2.TokenSource
+	mu       sync.Mutex
+	gidCache map[string]int64
 }
 
 func New(ctx context.Context, credentialsPath, credentialsJSON, sheetID string) (*Client, error) {
@@ -36,7 +39,7 @@ func New(ctx context.Context, credentialsPath, credentialsJSON, sheetID string) 
 	if err != nil {
 		return nil, err
 	}
-	return &Client{svc: svc, sheetID: sheetID, tokenSrc: creds.TokenSource}, nil
+	return &Client{svc: svc, sheetID: sheetID, tokenSrc: creds.TokenSource, gidCache: map[string]int64{}}, nil
 }
 
 func (c *Client) Values(ctx context.Context, tab, rng string) ([][]string, error) {
@@ -131,12 +134,22 @@ func (c *Client) writeGroupIDs(ctx context.Context, tab string, ids []string) er
 }
 
 func (c *Client) SheetGID(ctx context.Context, tab string) (int64, error) {
+	c.mu.Lock()
+	if gid, ok := c.gidCache[tab]; ok {
+		c.mu.Unlock()
+		return gid, nil
+	}
+	c.mu.Unlock()
+
 	resp, err := c.svc.Spreadsheets.Get(c.sheetID).Fields("sheets(properties(sheetId,title))").Context(ctx).Do()
 	if err != nil {
 		return 0, err
 	}
 	for _, sheet := range resp.Sheets {
 		if sheet.Properties != nil && sheet.Properties.Title == tab {
+			c.mu.Lock()
+			c.gidCache[tab] = sheet.Properties.SheetId
+			c.mu.Unlock()
 			return sheet.Properties.SheetId, nil
 		}
 	}

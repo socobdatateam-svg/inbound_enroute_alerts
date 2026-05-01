@@ -45,9 +45,11 @@ The first read of the watched cell is treated as the baseline and does not send.
 ENABLE_CHANGE_SENDS=true
 WATCH_TAB=Summary Sheet (In progress)
 WATCH_CELL=AE6
-WATCH_POLL_SECONDS=1
+WATCH_POLL_SECONDS=5
 CHANGE_SETTLE_SECONDS=7
 ```
+
+Google Sheets limits service-account reads to 60 requests per minute per user. A 5-second poll interval keeps the watcher at about 12 reads per minute before report sends and callback updates.
 
 Image render defaults:
 
