@@ -88,7 +88,7 @@ func (c *Client) SendText(ctx context.Context, groupID, content string, format i
 }
 
 func (c *Client) SendGroupText(ctx context.Context, groupID, content string, atAll bool) error {
-	_, err := c.SendText(ctx, groupID, content, 2, MessageOptions{AtAll: atAll})
+	_, err := c.SendText(ctx, groupID, content, 1, MessageOptions{AtAll: atAll})
 	return err
 }
 

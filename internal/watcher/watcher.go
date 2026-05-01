@@ -240,7 +240,7 @@ func (w *Watcher) alertText(ctx context.Context) (string, error) {
 }
 
 func formatLinehaulAlert(linehaulWindow string, now time.Time) string {
-	return fmt.Sprintf("IB Expected Linehauls to Arrive within %s including Late Units as of %s Update. Thanks!", linehaulWindow, now.Format("3:04PM"))
+	return fmt.Sprintf("<mention-tag target=\"seatalk://user?id=0\"/> IB Expected Linehauls to Arrive within %s including Late Units as of %s Update. Thanks!", linehaulWindow, now.Format("3:04PM"))
 }
 
 func (w *Watcher) now() time.Time {
