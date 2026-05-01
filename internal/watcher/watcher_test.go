@@ -53,8 +53,18 @@ func TestScheduledSendHours(t *testing.T) {
 func TestFormatLinehaulAlert(t *testing.T) {
 	now := time.Date(2026, time.May, 1, 9, 53, 0, 0, time.FixedZone("PHT", 8*60*60))
 
-	got := formatLinehaulAlert("2 hours", now)
-	want := "<mention-tag target=\"seatalk://user?id=0\"/> IB Expected Linehauls to Arrive within 2 hours including Late Units as of 9:53AM Update. Thanks!"
+	got := formatLinehaulAlert("2 hours", now, "v3 data", "v4 data", "v5 data")
+	want := "<mention-tag target=\"seatalk://user?id=0\"/> IB Expected Linehauls to Arrive within 2 hours including Late Units as of 9:53AM Update. Thanks!\n\nv3 data\nv4 data\nv5 data"
+	if got != want {
+		t.Fatalf("alert text = %q, want %q", got, want)
+	}
+}
+
+func TestFormatDailyUpdateAlert(t *testing.T) {
+	now := time.Date(2026, time.May, 1, 9, 53, 0, 0, time.FixedZone("PHT", 8*60*60))
+
+	got := formatDailyUpdateAlert(now)
+	want := "<mention-tag target=\"seatalk://user?id=0\"/> En Route, Docked & On-Queue Update as of 9:53AM"
 	if got != want {
 		t.Fatalf("alert text = %q, want %q", got, want)
 	}

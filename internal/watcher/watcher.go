@@ -248,7 +248,17 @@ func (w *Watcher) alertText(ctx context.Context) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return formatLinehaulAlert(linehaulWindow, w.now(), v3, v4, v5), nil
+
+	now := w.now()
+	hour := now.Hour()
+	if hour >= 8 && hour < 17 {
+		return formatDailyUpdateAlert(now), nil
+	}
+	return formatLinehaulAlert(linehaulWindow, now, v3, v4, v5), nil
+}
+
+func formatDailyUpdateAlert(now time.Time) string {
+	return fmt.Sprintf("<mention-tag target=\"seatalk://user?id=0\"/> En Route, Docked & On-Queue Update as of %s", now.Format("3:04PM"))
 }
 
 func formatLinehaulAlert(linehaulWindow string, now time.Time, v3, v4, v5 string) string {
