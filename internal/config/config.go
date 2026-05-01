@@ -42,12 +42,12 @@ func Load() (Config, error) {
 
 	cfg := Config{
 		Port:                 getenv("PORT", "8080"),
-		SheetID:              getenv("SHEET_ID", "1LiSwe5XABNPSPIhdK-Hu7S8VjWEsjPmUHmnU3toGXhc"),
-		TabName:              getenv("TAB_NAME", "Compliance Tracker"),
-		CaptureRange:         getenv("CAPTURE_RANGE", "A1:X80"),
+		SheetID:              getenv("SHEET_ID", "1APnTQXUQvWpTwmOLIC9U17kwjQcWX0BPYZvlfUPOJrU"),
+		TabName:              getenv("TAB_NAME", "Summary Sheet (In progress)"),
+		CaptureRange:         getenv("CAPTURE_RANGE", "C2:V62"),
 		BotConfigTab:         getenv("BOT_CONFIG_TAB", "bot_config"),
-		BotName:              getenv("BOT_NAME", "Bot Workstation"),
-		ReportLink:           getenv("REPORT_LINK", "https://docs.google.com/spreadsheets/d/1hYCkLL9Z4UR3WeKFuCDsOYch5v1FxmTJLGtk8UG_yyI/edit?gid=2001886446#gid=2001886446"),
+		BotName:              getenv("BOT_NAME", "Inbound Updates"),
+		ReportLink:           getenv("REPORT_LINK", "https://docs.google.com/spreadsheets/d/1APnTQXUQvWpTwmOLIC9U17kwjQcWX0BPYZvlfUPOJrU/edit?gid=755895903#gid=755895903"),
 		Timezone:             getenv("APP_TIMEZONE", "Asia/Manila"),
 		ImageFormat:          getenv("IMAGE_FORMAT", "png"),
 		PNGDPI:               mustInt("PNG_DPI", 300),
