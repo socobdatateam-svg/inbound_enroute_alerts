@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"strings"
 	"sync"
 	"time"
 )
@@ -262,6 +263,8 @@ func formatDailyUpdateAlert(now time.Time) string {
 }
 
 func formatLinehaulAlert(linehaulWindow string, now time.Time, v3, v4, v5 string) string {
+	v3 = strings.TrimPrefix(strings.TrimPrefix(v3, "**"), "*")
+	v3 = strings.TrimSuffix(strings.TrimSuffix(v3, "**"), "*")
 	return fmt.Sprintf("<mention-tag target=\"seatalk://user?id=0\"/> IB Expected Linehauls to Arrive within %s including Late Units as of %s Update.\n\n<b>%s</b>\n%s\n%s", linehaulWindow, now.Format("3:04PM"), v3, v4, v5)
 }
 
