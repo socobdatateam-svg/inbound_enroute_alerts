@@ -194,7 +194,7 @@ func (w *Watcher) SendNow(ctx context.Context) error {
 }
 
 func (w *Watcher) alert(ctx context.Context) error {
-	shouldSend, err := w.cellFromTab(ctx, "enrroute_consodata", "AE6")
+	shouldSend, err := w.cellFromTab(ctx, "Summary Sheet (In progress)", "AE6")
 	if err != nil {
 		return err
 	}
