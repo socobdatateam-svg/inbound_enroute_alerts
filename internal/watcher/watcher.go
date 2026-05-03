@@ -262,7 +262,7 @@ func formatDailyUpdateAlert(now time.Time) string {
 }
 
 func formatLinehaulAlert(linehaulWindow string, now time.Time, v3, v4, v5 string) string {
-	return fmt.Sprintf("<mention-tag target=\"seatalk://user?id=0\"/> IB Expected Linehauls to Arrive within %s including Late Units as of %s Update. Thanks!\n\n%s\n%s\n%s", linehaulWindow, now.Format("3:04PM"), v3, v4, v5)
+	return fmt.Sprintf("<mention-tag target=\"seatalk://user?id=0\"/> IB Expected Linehauls to Arrive within %s including Late Units as of %s Update.\n\n<b>%s</b>\n%s\n%s", linehaulWindow, now.Format("3:04PM"), v3, v4, v5)
 }
 
 func (w *Watcher) now() time.Time {
