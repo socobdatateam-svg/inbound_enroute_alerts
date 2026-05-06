@@ -1,0 +1,47 @@
+app = "bot-workstation"
+primary_region = "sin"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = false
+  auto_start_machines = true
+  min_machines_running = 1
+  processes = ["app"]
+
+[[http_service.checks]]
+  interval = "30s"
+  timeout = "5s"
+  grace_period = "10s"
+  method = "GET"
+  path = "/healthz"
+  protocol = "http"
+
+[env]
+  PORT = "8080"
+  SHEET_ID = "1APnTQXUQvWpTwmOLIC9U17kwjQcWX0BPYZvlfUPOJrU"
+  TAB_NAME = "Compliance Tracker"
+  CAPTURE_RANGE = "A1:X80"
+  BOT_CONFIG_TAB = "bot_config"
+  BOT_NAME = "Bot Workstation"
+  REPORT_LINK = "https://docs.google.com/spreadsheets/d/1APnTQXUQvWpTwmOLIC9U17kwjQcWX0BPYZvlfUPOJrU/edit?gid=755895903#gid=755895903"
+  APP_TIMEZONE = "Asia/Manila"
+  ENABLE_CHANGE_SENDS = "true"
+  WATCH_TAB = "Summary Sheet (In progress)"
+  WATCH_CELL = "AE6"
+  WATCH_POLL_SECONDS = "5"
+  CHANGE_SETTLE_SECONDS = "7"
+  ENABLE_SCHEDULED_SENDS = "false"
+  IMAGE_FORMAT = "png"
+  PNG_DPI = "300"
+  PNG_MAX_WIDTH = "2400"
+  WORK_DIR = "/app/tmp"
+
+[[vm]]
+  cpu_kind = "shared"
+  cpus = 1
+  memory_mb = 512
+

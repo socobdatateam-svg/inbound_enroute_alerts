@@ -1,0 +1,53 @@
+name: Manual Switch to Fly.io
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'Action to perform'
+        required: true
+        default: 'deploy'
+        type: choice
+        options:
+          - deploy
+          - destroy
+          - status
+
+jobs:
+  switch:
+    name: Fly.io Management
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Flyctl
+        uses: superfly/flyctl-actions/setup-flyctl@master
+
+      - name: Deploy to Fly.io
+        if: github.event.inputs.action == 'deploy'
+        run: flyctl deploy --remote-only
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
+      - name: Check Fly.io Status
+        if: github.event.inputs.action == 'status'
+        run: flyctl status --app bot-workstation
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
+      - name: Destroy Fly.io App
+        if: github.event.inputs.action == 'destroy'
+        run: |
+          echo "⚠️ WARNING: This will destroy the Fly.io app"
+          read -p "Are you sure? (type 'yes'): " confirm
+          if [ "$confirm" = "yes" ]; then
+            flyctl apps destroy bot-workstation --yes
+          else
+            echo "Cancelled"
+            exit 1
+          fi
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+

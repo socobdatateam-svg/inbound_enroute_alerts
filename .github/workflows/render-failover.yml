@@ -1,0 +1,80 @@
+name: Render Failover Monitor
+
+on:
+  schedule:
+    # Check every 15 minutes
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+
+jobs:
+  check-render:
+    name: Check Render Health & Failover
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Check Render Service Health
+        id: render-check
+        run: |
+          RENDER_URL="${{ secrets.RENDER_HEALTH_URL }}"
+          if [ -z "$RENDER_URL" ]; then
+            echo "RENDER_HEALTH_URL not set, skipping check"
+            echo "status=unknown" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          
+          # Check Render health endpoint
+          RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 "$RENDER_URL" || echo "000")
+          
+          if [ "$RESPONSE" = "200" ]; then
+            echo "Render is healthy (HTTP 200)"
+            echo "status=healthy" >> $GITHUB_OUTPUT
+          else
+            echo "Render is unhealthy or down (HTTP $RESPONSE)"
+            echo "status=unhealthy" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Check if Fly.io is already running
+        id: fly-check
+        if: steps.render-check.outputs.status == 'unhealthy'
+        run: |
+          if ! command -v flyctl &> /dev/null; then
+            curl -L https://fly.io/install.sh | sh
+            export PATH="$HOME/.fly/bin:$PATH"
+          fi
+          
+          # Check if app is already deployed and running
+          STATUS=$(flyctl status --app bot-workstation --json 2>/dev/null | jq -r '.Hostname' || echo "not_deployed")
+          
+          if [ "$STATUS" != "not_deployed" ]; then
+            echo "Fly.io is already deployed"
+            echo "deployed=true" >> $GITHUB_OUTPUT
+          else
+            echo "Fly.io not deployed"
+            echo "deployed=false" >> $GITHUB_OUTPUT
+          fi
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
+      - name: Trigger Fly.io Deployment
+        if: steps.render-check.outputs.status == 'unhealthy' && steps.fly-check.outputs.deployed == 'false'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'deploy-flyio.yml',
+              ref: 'main',
+              inputs: {
+                reason: 'Render service unhealthy - automatic failover'
+              }
+            });
+            console.log('Triggered Fly.io deployment due to Render failure');
+
+      - name: Notify on Failover
+        if: steps.render-check.outputs.status == 'unhealthy'
+        run: |
+          echo "⚠️ FAILOVER TRIGGERED: Render is down/unhealthy"
+          echo "Failover to Fly.io initiated at $(date)"
+          # Add notification logic here (Slack, email, etc.)
+
