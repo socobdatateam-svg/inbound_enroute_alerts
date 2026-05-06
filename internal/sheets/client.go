@@ -35,7 +35,7 @@ func New(ctx context.Context, credentialsPath, credentialsJSON, sheetID string) 
 	if err != nil {
 		return nil, fmt.Errorf("parse google credentials: %w", err)
 	}
-	svc, err := sheetsapi.NewService(ctx, option.WithCredentialsJSON(credentialsBytes), option.WithScopes(sheetsapi.SpreadsheetsScope, "https://www.googleapis.com/auth/drive.readonly"))
+	svc, err := sheetsapi.NewService(ctx, option.WithTokenSource(creds.TokenSource))
 	if err != nil {
 		return nil, err
 	}
